@@ -17,7 +17,9 @@ public class Percolation {
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
-        if (n <= 0)  throw new IllegalArgumentException();
+        if (n <= 0) {
+            throw new IllegalArgumentException();
+        }
         sideLength = n;
         v1 = 0;
         v2 = n * n + 1;
@@ -35,12 +37,16 @@ public class Percolation {
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
-        if (outOfBound(row, col)) throw new IllegalArgumentException();
-        if (isOpen(row, col)) return;
+        if (outOfBound(row, col)) {
+            throw new IllegalArgumentException();
+        }
+        if (isOpen(row, col)) {
+            return;
+        }
 
         int cur = positionToNum(row, col);
         openOrNot[cur] = 1;
-        count ++;
+        count++;
 
         if (hasLeft(row, col)) {
             int left = positionToNum(row, col - 1);
@@ -88,13 +94,17 @@ public class Percolation {
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
-        if (outOfBound(row, col)) throw new IllegalArgumentException();
+        if (outOfBound(row, col)) {
+            throw new IllegalArgumentException();
+        }
         return openOrNot[positionToNum(row, col)] == 1;
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        if (outOfBound(row, col)) throw new IllegalArgumentException();
+        if (outOfBound(row, col)) {
+            throw new IllegalArgumentException();
+        }
         int num = positionToNum(row, col);
         return uf2.connected(0, num);
     }
