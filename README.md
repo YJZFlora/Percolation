@@ -2,7 +2,9 @@
 ## percolation algorithm exercise
 
 ### 0. OverAll Solution
+
 * use WeightedQuickUnionUF uf to remember relationships between sites.
+
 * use 2 virtual sites to mark top and bottom line.
   If just using true sites in the top line and bottom line,
   isFull(), percolate() checking if a site is connect to top or bottom will call O(n) times of uf.isConnected().
