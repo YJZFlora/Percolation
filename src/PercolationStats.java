@@ -3,14 +3,15 @@ import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
 
-    private double mean;
-    private double stddev;
-    private double confidenceLo;
-    private double confidenceHi;
+    private final double mean;
+    private final double stddev;
+    private final double confidenceLo;
+    private final double confidenceHi;
+    private final static double CONFIDENCE_95 = 1.96;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
-        if (n < 0 || trials < 0) {
+        if (n <= 0 || trials <= 0) {
             throw new IllegalArgumentException();
         }
 
@@ -33,8 +34,8 @@ public class PercolationStats {
 
         mean = StdStats.mean(counts);
         stddev = StdStats.stddev(counts);
-        confidenceLo = mean - 1.96 * stddev / Math.sqrt(trials);
-        confidenceHi = mean + 1.96 * stddev / Math.sqrt(trials);
+        confidenceLo = mean - CONFIDENCE_95 * stddev / Math.sqrt(trials);
+        confidenceHi = mean + CONFIDENCE_95 * stddev / Math.sqrt(trials);
 
     }
 

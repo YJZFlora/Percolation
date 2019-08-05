@@ -7,12 +7,12 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
  */
 
 public class Percolation {
-    private int sideLength;
-    private WeightedQuickUnionUF uf;
-    private WeightedQuickUnionUF uf2;
-    private int v1;
-    private int v2;
-    private int[] openOrNot;
+    private final int sideLength;
+    private final WeightedQuickUnionUF uf;
+    private final WeightedQuickUnionUF uf2;
+    private final int v1;
+    private final int v2;
+    private boolean[] openOrNot;
     private int count;
 
     // creates n-by-n grid, with all sites initially blocked
@@ -25,7 +25,7 @@ public class Percolation {
         v2 = n * n + 1;
         uf = new WeightedQuickUnionUF(n * n + 2);
         uf2 = new WeightedQuickUnionUF(n * n + 1);
-        openOrNot = new int[n * n + 1];
+        openOrNot = new boolean[n * n + 1];
         // connect the first row with virtual num 0; connect the last row with num (n + 1)
         for (int i = 1; i < n + 1; i++) {
             uf.union(v1, i);
@@ -45,59 +45,38 @@ public class Percolation {
         }
 
         int cur = positionToNum(row, col);
-        openOrNot[cur] = 1;
+        openOrNot[cur] = true;
         count++;
 
-        if (hasLeft(row, col)) {
+        if (col > 1 && isOpen(row, col - 1)) {
             int left = positionToNum(row, col - 1);
-            if (isOpen(row, col - 1)) {
                 uf.union(cur, left);
                 uf2.union(cur, left);
-            }
         }
-        if (hasRight(row, col)) {
+        if (col < sideLength && isOpen(row, col + 1)) {
             int right = positionToNum(row, col + 1);
-            if (isOpen(row, col + 1)) {
                 uf.union(cur, right);
                 uf2.union(cur, right);
-            }
         }
-        if (hasUp(row, col)) {
+        if (row > 1 && isOpen(row - 1, col)) {
             int up = positionToNum(row - 1, col);
-            if (isOpen(row - 1, col)) {
                 uf.union(cur, up);
                 uf2.union(cur, up);
-            }
         }
-        if (hasDown(row, col)) {
+        if (row < sideLength && isOpen(row + 1, col)) {
             int down = positionToNum(row + 1, col);
-            if (isOpen(row + 1, col)) {
                 uf.union(cur, down);
                 uf2.union(cur, down);
-            }
         }
     }
 
-    private boolean hasLeft(int row, int col) {
-        return !outOfBound(row, col - 1);
-    }
-
-    private boolean hasRight(int row, int col) {
-        return !outOfBound(row, col + 1);
-    }
-    private boolean hasUp(int row, int col) {
-        return !outOfBound(row - 1, col);
-    }
-    private boolean hasDown(int row, int col) {
-        return !outOfBound(row + 1, col);
-    }
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
         if (outOfBound(row, col)) {
             throw new IllegalArgumentException();
         }
-        return openOrNot[positionToNum(row, col)] == 1;
+        return openOrNot[positionToNum(row, col)];
     }
 
     // is the site (row, col) full?
@@ -106,6 +85,9 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         int num = positionToNum(row, col);
+        if (!isOpen(row, col)) {
+            return false;
+        }
         return uf2.connected(0, num);
     }
 
@@ -116,6 +98,9 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
+        if (sideLength == 1) {
+            return isOpen(1, 1);
+        }
         return uf.connected(v1, v2);
     }
 
@@ -128,25 +113,6 @@ public class Percolation {
     }
     // test client (optional)
     public static void main(String[] args) {
-        Percolation p = new Percolation(4);
-        for (int i = 1; i < 5; i++) {
-            System.out.println("false " + p.hasLeft(i, 1));
-        }
-        p.open(2, 1);
-        System.out.println("true " + p.isOpen(2, 1));
-        p.open(3, 3);
-        p.open(3, 4);
-        System.out.println("false  " + p.percolates());
-        p.open(1, 3);
-        p.open(4, 3);
-        p.open(4, 3);
-        System.out.println("false  " + p.percolates());
-        p.open(1, 4);
-        System.out.println("false  " + p.percolates());
-        p.open(2, 3);
-        System.out.println("true  " + p.percolates());
-
-        System.out.println("7  " + p.numberOfOpenSites());
 
     }
 }
